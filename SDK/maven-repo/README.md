@@ -14,13 +14,14 @@ repositories {
 }
 
 dependencies {
-    implementation("com.shopback:redirectsdk:0.1.0")
+    implementation("com.shopback:redirectsdk:0.2.0")
 }
 ```
 
 ## Available Versions
 
-- **0.1.0** - Latest release
+- **0.2.0** - Latest release
+- **0.1.0** - Previous release
 
 ## Repository Structure
 
@@ -30,21 +31,11 @@ This repository follows the standard Maven repository layout:
 maven-repo/
 └── com/shopback/redirectsdk/
     ├── maven-metadata.xml
-    └── 0.1.0/
-        ├── redirectsdk-0.1.0.aar
-        ├── redirectsdk-0.1.0.pom
-        ├── redirectsdk-0.1.0.aar.sha1
-        ├── redirectsdk-0.1.0.aar.md5
-        ├── redirectsdk-0.1.0.pom.sha1
-        └── redirectsdk-0.1.0.pom.md5
+    ├── 0.1.0/
+    │   ├── redirectsdk-0.1.0.aar
+    │   └── redirectsdk-0.1.0.pom
+    └── 0.2.0/
+        ├── maven-metadata.xml
+        ├── redirectsdk-0.2.0.aar
+        └── redirectsdk-0.2.0.pom
 ```
-
-## Dependencies
-
-The SDK automatically resolves the following dependencies:
-
-- Ktor Client (Core, Android, Serialization, Content Negotiation, Logging)
-- Kotlinx Serialization JSON
-- Kotlinx Coroutines (Core, Android)
-
-No additional dependencies need to be added manually.
