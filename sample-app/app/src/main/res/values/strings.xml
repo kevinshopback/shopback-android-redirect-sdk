@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ShopBack Redirect SDK Sample</string>
+    <string name="btn_start_redirection">Start Redirection</string>
+    <string name="description_text">Tap the button below to test RedirectSDK external redirection functionality.\n\nNote: Remember to initialize the SDK with your authorization token and user ID before using redirection features.\n\nThis will open the redirect URL in your default system browser.</string>
+</resources>
