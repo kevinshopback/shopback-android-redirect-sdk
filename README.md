@@ -9,7 +9,7 @@ Add this repository to your `build.gradle.kts`:
 ```kotlin
 repositories {
     maven {
-        url = uri("https://kevinshopback.github.io/shopback-redirect-sdk/maven-repo")
+        url = uri("https://kevinshopback.github.io/shopback-redirect-sdk/SDK/maven-repo")
     }
 }
 
