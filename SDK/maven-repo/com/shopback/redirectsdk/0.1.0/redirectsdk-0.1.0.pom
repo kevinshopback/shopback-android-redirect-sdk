@@ -13,7 +13,7 @@
   <packaging>aar</packaging>
   <name>RedirectSDK</name>
   <description>ShopBack RedirectSDK for Android</description>
-  <url>https://github.com/shopback/redirect-sdk-distribution</url>
+  <url>https://github.com/kevinshopback/shopback-redirect-sdk</url>
   <licenses>
     <license>
       <name>MIT License</name>
@@ -28,59 +28,11 @@
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:git://github.com/shopback/redirect-sdk-distribution.git</connection>
-    <developerConnection>scm:git:ssh://github.com:shopback/redirect-sdk-distribution.git</developerConnection>
-    <url>https://github.com/shopback/redirect-sdk-distribution/tree/main</url>
+    <connection>scm:git:git://github.com/kevinshopback/shopback-redirect-sdk.git</connection>
+    <developerConnection>scm:git:ssh://github.com:kevinshopback/shopback-redirect-sdk.git</developerConnection>
+    <url>https://github.com/kevinshopback/shopback-redirect-sdk/tree/main</url>
   </scm>
   <dependencies>
-    <dependency>
-      <groupId>io.ktor</groupId>
-      <artifactId>ktor-client-core</artifactId>
-      <version>2.3.12</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.ktor</groupId>
-      <artifactId>ktor-client-android</artifactId>
-      <version>2.3.12</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.ktor</groupId>
-      <artifactId>ktor-serialization-kotlinx-json</artifactId>
-      <version>2.3.12</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.ktor</groupId>
-      <artifactId>ktor-client-content-negotiation</artifactId>
-      <version>2.3.12</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.ktor</groupId>
-      <artifactId>ktor-client-logging</artifactId>
-      <version>2.3.12</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jetbrains.kotlinx</groupId>
-      <artifactId>kotlinx-serialization-json</artifactId>
-      <version>1.6.3</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jetbrains.kotlinx</groupId>
-      <artifactId>kotlinx-coroutines-core</artifactId>
-      <version>1.8.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jetbrains.kotlinx</groupId>
-      <artifactId>kotlinx-coroutines-android</artifactId>
-      <version>1.8.1</version>
-      <scope>compile</scope>
-    </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib</artifactId>
@@ -91,6 +43,54 @@
       <groupId>androidx.core</groupId>
       <artifactId>core-ktx</artifactId>
       <version>1.17.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.ktor</groupId>
+      <artifactId>ktor-client-core</artifactId>
+      <version>2.3.12</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.ktor</groupId>
+      <artifactId>ktor-client-android</artifactId>
+      <version>2.3.12</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.ktor</groupId>
+      <artifactId>ktor-serialization-kotlinx-json</artifactId>
+      <version>2.3.12</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.ktor</groupId>
+      <artifactId>ktor-client-content-negotiation</artifactId>
+      <version>2.3.12</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.ktor</groupId>
+      <artifactId>ktor-client-logging</artifactId>
+      <version>2.3.12</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-serialization-json</artifactId>
+      <version>1.6.3</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-core</artifactId>
+      <version>1.8.1</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-android</artifactId>
+      <version>1.8.1</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
