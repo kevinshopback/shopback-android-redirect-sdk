@@ -21,8 +21,8 @@ jobs:
       - name: Check for version changes
         id: check-version
         run: |
-          # Get current version from maven-metadata.xml
-          CURRENT_VERSION=$(xmllint --xpath "string(//metadata/versioning/latest)" SDK/maven-repo/com/shopback/redirectsdk/maven-metadata.xml)
+          # Get current version from maven-metadata.xml using grep and sed
+          CURRENT_VERSION=$(grep -o '<latest>.*</latest>' SDK/maven-repo/com/shopback/redirectsdk/maven-metadata.xml | sed 's/<latest>\(.*\)<\/latest>/\1/')
           echo "Current version: $CURRENT_VERSION"
           echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
 
@@ -34,7 +34,7 @@ jobs:
           fi
 
           # Get previous version from the previous commit
-          PREVIOUS_VERSION=$(git show HEAD~1:SDK/maven-repo/com/shopback/redirectsdk/maven-metadata.xml | xmllint --xpath "string(//metadata/versioning/latest)" -)
+          PREVIOUS_VERSION=$(git show HEAD~1:SDK/maven-repo/com/shopback/redirectsdk/maven-metadata.xml | grep -o '<latest>.*</latest>' | sed 's/<latest>\(.*\)<\/latest>/\1/')
           echo "Previous version: $PREVIOUS_VERSION"
 
           # Compare versions
