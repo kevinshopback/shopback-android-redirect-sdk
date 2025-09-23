@@ -1,6 +1,6 @@
 # Overview
 
-The ShopBack Android RedirectSDK enables seamless partner redirections for ShopBack applications across multiple regions.
+The ShopBack Android Redirect SDK enables seamless redirections for partner applications.
 
 ## Requirements
 
