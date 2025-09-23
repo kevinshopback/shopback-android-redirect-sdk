@@ -1,0 +1,105 @@
+name: Deploy Maven Repo to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'SDK/maven-repo/**' ]
+  workflow_dispatch:
+
+jobs:
+  check-version-change:
+    runs-on: ubuntu-latest
+    outputs:
+      version-changed: ${{ steps.check-version.outputs.changed }}
+      current-version: ${{ steps.check-version.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for version changes
+        id: check-version
+        run: |
+          # Get current version from maven-metadata.xml
+          CURRENT_VERSION=$(xmllint --xpath "string(//metadata/versioning/latest)" SDK/maven-repo/com/shopback/redirectsdk/maven-metadata.xml)
+          echo "Current version: $CURRENT_VERSION"
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+          # Check if this is the first workflow run
+          if ! git show HEAD~1:SDK/maven-repo/com/shopback/redirectsdk/maven-metadata.xml 2>/dev/null; then
+            echo "First run or maven-metadata.xml is new, deploying..."
+            echo "changed=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Get previous version from the previous commit
+          PREVIOUS_VERSION=$(git show HEAD~1:SDK/maven-repo/com/shopback/redirectsdk/maven-metadata.xml | xmllint --xpath "string(//metadata/versioning/latest)" -)
+          echo "Previous version: $PREVIOUS_VERSION"
+
+          # Compare versions
+          if [ "$CURRENT_VERSION" != "$PREVIOUS_VERSION" ]; then
+            echo "Version changed from $PREVIOUS_VERSION to $CURRENT_VERSION"
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "Version unchanged: $CURRENT_VERSION"
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+  deploy:
+    needs: check-version-change
+    runs-on: ubuntu-latest
+    if: needs.check-version-change.outputs.version-changed == 'true'
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './SDK/maven-repo'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.check-version-change.outputs.current-version }}
+          release_name: Release ${{ needs.check-version-change.outputs.current-version }}
+          body: |
+            🚀 New version of ShopBack RedirectSDK: ${{ needs.check-version-change.outputs.current-version }}
+
+            ## Installation
+
+            Add this to your `build.gradle.kts`:
+
+            ```kotlin
+            repositories {
+                maven {
+                    url = uri("https://kevinshopback.github.io/shopback-redirect-sdk/maven-repo")
+                }
+            }
+
+            dependencies {
+                implementation("com.shopback:redirectsdk:${{ needs.check-version-change.outputs.current-version }}")
+            }
+            ```
+          draft: false
+          prerelease: false
