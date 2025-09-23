@@ -14,14 +14,15 @@ repositories {
 }
 
 dependencies {
-    implementation("com.shopback:redirectsdk:0.2.0")
+    implementation("com.shopback:redirectsdk:0.2.1")
 }
 ```
 
 ## Available Versions
 
-- **0.2.0** - Latest release
-- **0.1.0** - Previous release
+- **0.2.1** - Latest release
+- **0.2.0** - Previous release
+- **0.1.0** - Initial release
 
 
 ## Features
