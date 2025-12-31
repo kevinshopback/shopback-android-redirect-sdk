@@ -13,12 +13,12 @@ Add this repository to your `build.gradle.kts`:
 ```kotlin
 repositories {
     maven {
-        url = uri("https://kevinshopback.github.io/shopback-redirect-sdk/maven-repo")
+        url = uri("https://kevinshopback.github.io/shopback-redirect-sdk/SDK")
     }
 }
 
 dependencies {
-    implementation("com.shopback:redirectsdk:0.2.1")
+    implementation("com.shopback:redirectsdk:0.1.0")
 }
 ```
 
