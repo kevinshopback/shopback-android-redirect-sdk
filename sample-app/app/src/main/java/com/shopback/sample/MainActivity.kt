@@ -9,8 +9,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.shopback.redirectsdk.Domain
 import com.shopback.redirectsdk.InitListener
+import com.shopback.redirectsdk.InitialSDKException
 import com.shopback.redirectsdk.RedirectionListener
 import com.shopback.redirectsdk.RedirectSDK
+import com.shopback.redirectsdk.RedirectionException
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,8 +49,8 @@ class MainActivity : AppCompatActivity() {
                     enableButton(true)
                 }
 
-                override fun onInitError(throwable: Throwable) {
-                    Toast.makeText(this@MainActivity, "RedirectSDK init failed: ${throwable.message}", Toast.LENGTH_LONG).show()
+                override fun onInitError(exception: InitialSDKException) {
+                    Toast.makeText(this@MainActivity, "RedirectSDK init failed: ${exception.message}", Toast.LENGTH_LONG).show()
                     enableButton(false)
                 }
             }
@@ -69,12 +71,13 @@ class MainActivity : AppCompatActivity() {
             context = this,
             redirectId = "redirect_id_here",
             listener = object : RedirectionListener {
-                override fun onRedirectSuccess() {
+
+                override fun onRedirectSuccess(shoppingTripId: String) {
                     Toast.makeText(this@MainActivity, "Redirect successful", Toast.LENGTH_SHORT).show()
                 }
 
-                override fun onRedirectError(throwable: Throwable) {
-                    Toast.makeText(this@MainActivity, "Redirect failed: ${throwable.message}", Toast.LENGTH_LONG).show()
+                override fun onRedirectError(exception: RedirectionException) {
+                    Toast.makeText(this@MainActivity, "Redirect failed: ${exception.message}", Toast.LENGTH_LONG).show()
                 }
             }
         )
