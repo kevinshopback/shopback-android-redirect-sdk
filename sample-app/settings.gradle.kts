@@ -17,7 +17,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven {
-            url = uri("https://kevinshopback.github.io/shopback-redirect-sdk/SDK/maven-repo")
+            url = uri("https://kevinshopback.github.io/shopback-redirect-sdk/SDK")
         }
     }
 }
