@@ -58,9 +58,9 @@ RedirectSDK.init(
             Log.d("RedirectSDK", "Initialized successfully")
         }
 
-        override fun onInitError(throwable: Throwable) {
+        override fun onInitError(exception: InitialSDKException) {
             // Handle initialization error
-            Log.e("RedirectSDK", "Init failed", throwable)
+            Log.e("RedirectSDK", "Init failed", exception)
         }
     }
 )
@@ -75,14 +75,15 @@ RedirectSDK.startRedirection(
     context = this,
     redirectId = "redirect_id_here",
     listener = object : RedirectionListener {
-        override fun onRedirectSuccess() {
+        override fun onRedirectSuccess(shoppingTripId: String) {
             // Redirection completed successfully
-            Log.d("RedirectSDK", "Redirect successful")
+            // Use shoppingTripId to track the shopping trip
+            Log.d("RedirectSDK", "Redirect successful, shoppingTripId: $shoppingTripId")
         }
 
-        override fun onRedirectError(throwable: Throwable) {
+        override fun onRedirectError(exception: RedirectionException) {
             // Handle redirection error
-            Log.e("RedirectSDK", "Redirect failed", throwable)
+            Log.e("RedirectSDK", "Redirect failed", exception)
         }
     }
 )
@@ -92,21 +93,21 @@ RedirectSDK.startRedirection(
 
 The SDK supports the following ShopBack domains:
 
-| Domain Code | Region |
-|-------------|--------|
-| `SG` | Singapore |
-| `MY` | Malaysia |
-| `PH` | Philippines |
-| `ID` | Indonesia |
-| `TW` | Taiwan |
-| `TH` | Thailand |
-| `AU` | Australia |
-| `VN` | Vietnam |
-| `KR` | South Korea |
-| `HK` | Hong Kong |
-| `DE` | Germany |
-| `NZ` | New Zealand |
-| `US` | United States |
+| Domain Code | Region        |
+|-------------|---------------|
+| `SG`        | Singapore     |
+| `MY`        | Malaysia      |
+| `PH`        | Philippines   |
+| `ID`        | Indonesia     |
+| `TW`        | Taiwan        |
+| `TH`        | Thailand      |
+| `AU`        | Australia     |
+| `VN`        | Vietnam       |
+| `KR`        | South Korea   |
+| `HK`        | Hong Kong     |
+| `DE`        | Germany       |
+| `NZ`        | New Zealand   |
+| `US`        | United States |
 
 ## API Reference
 
@@ -136,6 +137,9 @@ Starts a partner redirection process.
 - `redirectId: String` - Partner-specific redirect identifier
 - `listener: RedirectionListener?` - Optional redirection callback
 
+**Callback:**
+- `onRedirectSuccess(shoppingTripId: String)` - Called when redirection succeeds, returns the shopping trip ID for tracking
+
 ### Interfaces
 
 #### InitListener
@@ -145,7 +149,7 @@ Callback interface for SDK initialization events.
 ```kotlin
 interface InitListener {
     fun onInitSuccess()
-    fun onInitError(throwable: Throwable)
+    fun onInitError(exception: InitialSDKException)
 }
 ```
 
@@ -155,10 +159,13 @@ Callback interface for redirection events.
 
 ```kotlin
 interface RedirectionListener {
-    fun onRedirectSuccess()
-    fun onRedirectError(throwable: Throwable)
+    fun onRedirectSuccess(shoppingTripId: String)
+    fun onRedirectError(exception: RedirectionException)
 }
 ```
+
+**Methods:**
+- `onRedirectSuccess(shoppingTripId: String)` - Called when redirection completes successfully. The `shoppingTripId` parameter contains the unique identifier for the shopping trip, which can be used for tracking and analytics purposes.
 
 #### Domain
 
@@ -172,32 +179,81 @@ enum class Domain {
 
 ## Error Handling
 
-The SDK provides comprehensive error handling through callback listeners:
+The SDK provides comprehensive error handling through callback listeners and a structured exception hierarchy. All exceptions include both an error code and a descriptive error message:
+
+### Exception Hierarchy
+
+| Exception Type          | Parent Class           | Description                          |
+|-------------------------|------------------------|--------------------------------------|
+| `RedirectSDKException`  | `Exception`            | Base sealed class for all SDK errors |
+| `InitialSDKException`   | `RedirectSDKException` | Exception for initialization errors  |
+| `RedirectionException`  | `RedirectSDKException` | Exception for redirection errors     |
+
+### Error Codes
+
+#### InitialSDKException Error Codes
+
+| Code | Constant                     | Description                       |
+|------|------------------------------|-----------------------------------|
+| 1001 | `CODE_EMPTY_AUTHORIZATION`   | Authorization token cannot be empty |
+| 1002 | `CODE_EMPTY_USER_ID`         | User ID cannot be empty           |
+| 1003 | `CODE_INIT_FAILED`           | SDK initialization failed         |
+
+#### RedirectionException Error Codes
+
+| Code | Constant                 | Description                          |
+|------|--------------------------|--------------------------------------|
+| 2001 | `CODE_NOT_INITIALIZED`   | SDK not initialized                  |
+| 2002 | `CODE_EMPTY_REDIRECT_ID` | Redirect ID cannot be empty          |
+| 2003 | `CODE_INVALID_FORMAT`    | Redirect ID has invalid format       |
+| 2004 | `CODE_INVALID_URL`       | Redirect URL has invalid format      |
+| 2005 | `CODE_RESOLVE_FAILED`    | Resolve the redirect ID failed       |
+| 2006 | `CODE_OPEN_FAILED`       | Open the redirect URL failed         |
+
+### Error Handling Examples
 
 ```kotlin
-// Common initialization errors
-override fun onInitError(throwable: Throwable) {
-    when (throwable.message) {
-        "Authorization is not valid" -> {
-            // Handle invalid JWT token
+// Handle initialization errors
+override fun onInitError(exception: InitialSDKException) {
+    when (exception.code) {
+        InitialSDKException.CODE_EMPTY_AUTHORIZATION -> {
+            Log.e("RedirectSDK", "Authorization token is required")
         }
-        "UserId is not valid" -> {
-            // Handle invalid user ID
+        InitialSDKException.CODE_EMPTY_USER_ID -> {
+            Log.e("RedirectSDK", "User ID is required")
         }
-        else -> {
-            // Handle other initialization errors
+        InitialSDKException.CODE_INIT_FAILED -> {
+            Log.e("RedirectSDK", "Initialization failed: ${exception.message}")
         }
     }
 }
 
-// Common redirection errors
-override fun onRedirectError(throwable: Throwable) {
-    when (throwable.message) {
-        "Please init the RedirectSDK before redirection" -> {
-            // SDK not initialized, call init() first
+// Handle redirection success
+override fun onRedirectSuccess(shoppingTripId: String) {
+    Log.d("RedirectSDK", "Redirection successful! Shopping Trip ID: $shoppingTripId")
+    // Use shoppingTripId for tracking, analytics, or sending back to your backend
+}
+
+// Handle redirection errors
+override fun onRedirectError(exception: RedirectionException) {
+    when (exception.code) {
+        RedirectionException.CODE_NOT_INITIALIZED -> {
+            Log.e("RedirectSDK", "Please initialize SDK first")
         }
-        else -> {
-            // Handle network or other redirection errors
+        RedirectionException.CODE_EMPTY_REDIRECT_ID -> {
+            Log.e("RedirectSDK", "Redirect ID is required")
+        }
+        RedirectionException.CODE_INVALID_FORMAT -> {
+            Log.e("RedirectSDK", "Invalid redirect ID format")
+        }
+        RedirectionException.CODE_INVALID_URL -> {
+            Log.e("RedirectSDK", "Invalid redirect URL format")
+        }
+        RedirectionException.CODE_RESOLVE_FAILED -> {
+            Log.e("RedirectSDK", "Failed to resolve redirect: ${exception.message}")
+        }
+        RedirectionException.CODE_OPEN_FAILED -> {
+            Log.e("RedirectSDK", "Failed to open redirect: ${exception.message}")
         }
     }
 }
@@ -211,6 +267,15 @@ A complete sample application is included in the `app` module. To run the sample
 2. Open the project in Android Studio
 3. Update the domain, JWT token and user ID in `MainActivity.kt`
 4. Run the app on an Android device or emulator
+
+## Changelog
+
+### 0.1.0 - Latest release
+- Initial release of ShopBack Android Redirect SDK
+- Support for partner redirections across all ShopBack domains
+- JWT-based authentication
+- Comprehensive error handling
+- Sample application included
 
 ## License
 
