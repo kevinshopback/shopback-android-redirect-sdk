@@ -11,7 +11,7 @@ activity = "1.11.0"
 ktor = "2.3.12"
 kotlinxSerialization = "1.6.3"
 kotlinxCoroutines = "1.8.1"
-redirectsdk = "0.1.0"
+redirectsdk = "0.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
